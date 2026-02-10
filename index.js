@@ -4,6 +4,7 @@ const axios = require("axios");
 const cors = require("cors");
 
 const app = express();
+app.set('json spaces', 0); // Compact JSON formatting
 app.use(cors());
 app.use(express.json());
 
