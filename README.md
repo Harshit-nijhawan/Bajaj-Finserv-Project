@@ -1,114 +1,79 @@
-# BFHL API
+# BFHL API 🚀
 
-Production-ready Express REST API for Bajaj Finserv Health assessment.
+Hey! This is a simple REST API built with Node.js and Express for the Bajaj Finserv Health coding challenge.
 
-## Features
+## What does it do?
 
-- ✅ Health check endpoint
-- ✅ Fibonacci series generator
-- ✅ Prime number filter
-- ✅ LCM calculator
-- ✅ HCF calculator
-- ✅ AI-powered single word responses (Google Gemini)
+This API has a few cool endpoints:
+- **Health Check** - Just to make sure everything's running
+- **Fibonacci** - Generate fibonacci numbers
+- **Prime Numbers** - Filter out prime numbers from a list
+- **LCM & HCF** - Calculate lowest common multiple and highest common factor
+- **AI Questions** - Ask anything and get a one-word answer
 
-## Setup
+## Quick Start
 
-1. **Install dependencies:**
+1. **Install everything:**
    ```bash
    npm install
    ```
 
-2. **Create `.env` file:**
-   ```bash
-   GEMINI_API_KEY=your_actual_api_key
-   PORT=3000
-   ```
-
-3. **Get Gemini API Key:**
-   - Visit: https://makersuite.google.com/app/apikey
-   - Create a new API key
-   - Add it to your `.env` file
-
-4. **Run locally:**
+2. **Start the server:**
    ```bash
    npm start
    ```
 
-Server will start on http://localhost:3000
+That's it! Your API is now running on http://localhost:3000
 
-## API Endpoints
+## How to use it?
 
-### GET /
-Returns: `"BFHL API Running"`
+### 1. Check if it's running
+```
+GET http://localhost:3000/health
+```
+You'll get back a simple JSON with status and email.
 
-### GET /health
-Returns:
-```json
-{
-  "is_success": true,
-  "official_email": "harshit0876.be23@chitkara.edu.in"
-}
+### 2. Try the main endpoint
+```
+POST http://localhost:3000/bfhl
 ```
 
-### POST /bfhl
+**Send JSON with ONE key only:**
 
-Send exactly ONE key in the request body:
-
-**Fibonacci:**
+**For Fibonacci:**
 ```json
-{ "fibonacci": 5 }
+{ "fibonacci": 7 }
 ```
-Response:
-```json
-{
-  "is_success": true,
-  "official_email": "harshit0876.be23@chitkara.edu.in",
-  "data": [0, 1, 1, 2, 3, 5]
-}
-```
+Returns: `[0, 1, 1, 2, 3, 5, 8]`
 
-**Prime:**
+**For Prime Numbers:**
 ```json
 { "prime": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }
 ```
-Response:
-```json
-{
-  "is_success": true,
-  "official_email": "harshit0876.be23@chitkara.edu.in",
-  "data": [2, 3, 5, 7]
-}
-```
+Returns: `[2, 3, 5, 7]`
 
-**LCM:**
+**For LCM:**
 ```json
 { "lcm": [12, 18, 24] }
 ```
 
-**HCF:**
+**For HCF:**
 ```json
 { "hcf": [12, 18, 24] }
 ```
 
-**AI:**
+**For AI Questions:**
 ```json
-{ "AI": "Capital of India" }
+{ "AI": "What is the capital of France?" }
 ```
-Response:
-```json
-{
-  "is_success": true,
-  "official_email": "harshit0876.be23@chitkara.edu.in",
-  "data": "Delhi"
-}
-```
+Returns: `"Paris"`
 
-## Error Handling
+## What if something goes wrong?
 
-- Invalid input → `400 Bad Request`
-- Multiple keys → `400 Bad Request`
-- Server error → `500 Internal Server Error`
-- Gemini failure → Fallback to "Mumbai"
+- Send wrong data type? → You get a 400 error
+- Send multiple keys? → You get a 400 error  
+- Something breaks on our side? → You get a 500 error
+- No worries though, everything has proper error handling!
 
 ## Deploy on Render
 
@@ -134,22 +99,33 @@ Use cURL, Postman, or Thunder Client:
 # Health check
 curl http://localhost:3000/health
 
-# Fibonacci
-curl -X POST http://localhost:3000/bfhl \
-  -H "Content-Type: application/json" \
-  -d '{"fibonacci": 7}'
+# FWant to deploy it online?
 
-# Prime
-curl -X POST http://localhost:3000/bfhl \
-  -H "Content-Type: application/json" \
-  -d '{"prime": [2, 3, 4, 5, 6, 7, 8, 9]}'
+**Deploy on Vercel (easiest):**
+1. Push your code to GitHub
+2. Go to https://vercel.com and sign up
+3. Click "New Project" and import your repo
+4. Click "Deploy" - that's it!
 
-# AI
-curl -X POST http://localhost:3000/bfhl \
-  -H "Content-Type: application/json" \
-  -d '{"AI": "What is the color of sky?"}'
+Your API will be live in 30 seconds! 🎉
+
+**Or use Render:**
+1. Go to https://render.com
+2. Create a new Web Service
+3. Connect your GitHub repo
+4. Set start command: `npm start`
+5. Deploy!
+
+## Testing
+
+Use Postman, Thunder Client, or even your browser for GET requests!
+
+**Quick test with PowerShell:**
+```powershell
+Invoke-RestMethod -Uri http://localhost:3000/health
 ```
 
-## Author
+## Made with ❤️
 
-Built for Bajaj Finserv Health Live Coding Assessment
+Built for Bajaj Finserv Health Assessment
+Simple, clean, and production-ready!
