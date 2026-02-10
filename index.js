@@ -73,50 +73,37 @@ app.post("/bfhl", async (req, res) => {
     else if (key === "AI") {
       if (typeof value !== "string") throw "";
 
-      // Smart AI response using NLP keyword extraction
-      const q = value.toLowerCase().trim();
-      
-      // Capitals
-      if (q.match(/capital|city/) && q.match(/france|french|paris/)) data = 'Paris';
-      else if (q.match(/capital|city/) && q.match(/india|delhi/)) data = 'Delhi';
-      else if (q.match(/capital|city/) && q.match(/japan|tokyo/)) data = 'Tokyo';
-      else if (q.match(/capital|city/) && q.match(/usa|america|united states/)) data = 'Washington';
-      else if (q.match(/capital|city/) && q.match(/uk|britain|england|london/)) data = 'London';
-      else if (q.match(/capital|city/) && q.match(/china|beijing/)) data = 'Beijing';
-      else if (q.match(/capital|city/) && q.match(/germany|berlin/)) data = 'Berlin';
-      else if (q.match(/capital|city/) && q.match(/italy|rome/)) data = 'Rome';
-      else if (q.match(/capital|city/) && q.match(/spain|madrid/)) data = 'Madrid';
-      else if (q.match(/capital|city/) && q.match(/canada|ottawa/)) data = 'Ottawa';
-      else if (q.match(/capital|city/) && q.match(/australia|canberra/)) data = 'Canberra';
-      else if (q.match(/capital|city/) && q.match(/brazil|brasilia/)) data = 'Brasília';
-      
-      // CEOs
-      else if (q.match(/ceo|chief/) && q.match(/google|alphabet/)) data = 'Sundar';
-      else if (q.match(/ceo|chief/) && q.match(/apple/)) data = 'Tim';
-      else if (q.match(/ceo|chief/) && q.match(/microsoft/)) data = 'Satya';
-      else if (q.match(/ceo|chief/) && q.match(/tesla|spacex/)) data = 'Elon';
-      else if (q.match(/ceo|chief/) && q.match(/amazon/)) data = 'Andy';
-      else if (q.match(/ceo|chief/) && q.match(/meta|facebook/)) data = 'Mark';
-      
-      // Planets
-      else if (q.match(/largest|biggest/) && q.match(/planet/)) data = 'Jupiter';
-      else if (q.match(/smallest/) && q.match(/planet/)) data = 'Mercury';
-      else if (q.match(/red/) && q.match(/planet/)) data = 'Mars';
-      else if (q.match(/blue/) && q.match(/planet/)) data = 'Neptune';
-      
-      // Colors
-      else if (q.match(/color|colour/) && q.match(/sky/)) data = 'Blue';
-      else if (q.match(/color|colour/) && q.match(/sun/)) data = 'Yellow';
-      else if (q.match(/color|colour/) && q.match(/grass|leaf/)) data = 'Green';
-      else if (q.match(/color|colour/) && q.match(/blood/)) data = 'Red';
-      
-      // General knowledge
-      else if (q.match(/tallest|highest/) && q.match(/mountain/)) data = 'Everest';
-      else if (q.match(/longest/) && q.match(/river/)) data = 'Nile';
-      else if (q.match(/largest/) && q.match(/ocean/)) data = 'Pacific';
-      else if (q.match(/fastest/) && q.match(/animal|land/)) data = 'Cheetah';
-      
-      else data = 'Mumbai'; // Fallback
+      try {
+        const response = await axios.post(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${process.env.GEMINI_API_KEY}`,
+          {
+            contents: [{
+              parts: [{
+                text: value + " Answer with just the direct answer only, no extra text, no formatting, no explanation."
+              }]
+            }],
+            generationConfig: {
+              maxOutputTokens: 500,
+              temperature: 0.3
+            }
+          },
+          {
+            headers: { 'Content-Type': 'application/json' },
+            timeout: 30000
+          }
+        );
+
+        const aiText = response.data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+        if (aiText) {
+          // Clean up the response - remove markdown formatting and extra text
+          data = aiText.replace(/\*\*/g, '').replace(/\*/g, '').trim();
+        } else {
+          throw new Error('Empty AI response');
+        }
+      } catch (error) {
+        console.error('AI API Error:', error.response?.data?.error || error.message);
+        data = "Error";
+      }
     }
 
     else {
